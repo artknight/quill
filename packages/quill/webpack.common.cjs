@@ -66,4 +66,7 @@ module.exports = {
       filename: '[name]',
     }),
   ],
+	optimization: {
+		minimize: false,
+	},
 };
