@@ -191,16 +191,6 @@ interface SyntaxOptions {
   hljs: any;
 }
 
-const highlight = (lib: any, language: string, text: string) => {
-  if (typeof lib.versionString === 'string') {
-    const majorVersion = lib.versionString.split('.')[0];
-    if (parseInt(majorVersion, 10) >= 11) {
-      return lib.highlight(text, { language }).value;
-    }
-  }
-  return lib.highlight(language, text).value;
-};
-
 class Syntax extends Module<SyntaxOptions> {
   static DEFAULTS: SyntaxOptions & { hljs: any };
 
