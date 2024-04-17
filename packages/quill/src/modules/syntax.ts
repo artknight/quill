@@ -289,20 +289,9 @@ class Syntax extends Module<SyntaxOptions> {
   }
 
   highlightBlot(text: string, language = 'plain') {
-    language = this.languages[language] ? language : 'plain';
-    if (language === 'plain') {
-      return escapeText(text)
-        .split('\n')
-        .reduce((delta, line, i) => {
-          if (i !== 0) {
-            delta.insert('\n', { [CodeBlock.blotName]: language });
-          }
-          return delta.insert(line);
-        }, new Delta());
-    }
     const container = this.quill.root.ownerDocument.createElement('div');
     container.classList.add(CodeBlock.className);
-    container.innerHTML = highlight(this.options.hljs, language, text);
+    container.innerHTML = this.options.hljs.highlightAuto(text).value;
     return traverse(
       this.quill.scroll,
       container,
