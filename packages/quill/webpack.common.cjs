@@ -31,7 +31,14 @@ const svgRules = {
 const stylRules = {
   test: /\.styl$/,
   include: [resolve(__dirname, 'src/assets')],
-  use: [MiniCssExtractPlugin.loader, 'css-loader', 'stylus-loader'],
+  use: [MiniCssExtractPlugin.loader, 'css-loader', {
+	  loader: "stylus-loader",
+	  options: {
+		  stylusOptions: {
+			  compress: false
+		  }
+	  }
+  }],
 };
 
 module.exports = {
