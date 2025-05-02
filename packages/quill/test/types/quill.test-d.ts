@@ -1,8 +1,38 @@
 import { assertType, expectTypeOf } from 'vitest';
-import Quill from '../../src/quill.js';
+import Quill, { Delta } from '../../src/quill.js';
 import type { EmitterSource, Parchment, Range } from '../../src/quill.js';
-import Delta from 'quill-delta';
 import type { default as Block, BlockEmbed } from '../../src/blots/block.js';
+import SnowTheme from '../../src/themes/snow.js';
+import { LeafBlot } from 'parchment';
+
+{
+  const Counter = (quill: Quill, options: { unit: string }) => {
+    console.log(quill, options);
+  };
+  Quill.register('modules/counter', Counter);
+  Quill.register('themes/snow', SnowTheme);
+  Quill.register('themes/snow', SnowTheme, true);
+
+  class MyBlot extends LeafBlot {}
+
+  Quill.register(MyBlot);
+  Quill.register(MyBlot, true);
+  // @ts-expect-error
+  Quill.register(SnowTheme);
+  Quill.register({
+    'modules/counter': Counter,
+    'themes/snow': SnowTheme,
+    'formats/my-blot': MyBlot,
+  });
+  Quill.register(
+    {
+      'modules/counter': Counter,
+      'themes/snow': SnowTheme,
+      'formats/my-blot': MyBlot,
+    },
+    true,
+  );
+}
 
 const quill = new Quill('#editor');
 
@@ -30,8 +60,12 @@ const quill = new Quill('#editor');
 }
 
 {
-  quill.insertEmbed(10, 'image', 'https://example.com/logo.png');
-  quill.insertEmbed(10, 'image', 'https://example.com/logo.png', 'api');
+  assertType<Delta>(
+    quill.insertEmbed(10, 'image', 'https://example.com/logo.png'),
+  );
+  assertType<Delta>(
+    quill.insertEmbed(10, 'image', 'https://example.com/logo.png', 'api'),
+  );
 }
 
 {
@@ -74,22 +108,26 @@ const quill = new Quill('#editor');
 }
 
 {
-  quill.updateContents([{ insert: 'Hello World!' }]);
-  quill.updateContents([{ insert: 'Hello World!' }], 'api');
-  quill.updateContents(new Delta().insert('Hello World!'));
-  quill.updateContents(new Delta().insert('Hello World!'), 'api');
+  assertType<Delta>(quill.updateContents([{ insert: 'Hello World!' }]));
+  assertType<Delta>(quill.updateContents([{ insert: 'Hello World!' }], 'api'));
+  assertType<Delta>(quill.updateContents(new Delta().insert('Hello World!')));
+  assertType<Delta>(
+    quill.updateContents(new Delta().insert('Hello World!'), 'api'),
+  );
 }
 
 {
-  quill.setContents([{ insert: 'Hello World!\n' }]);
-  quill.setContents([{ insert: 'Hello World!\n' }], 'api');
-  quill.setContents(new Delta().insert('Hello World!\n'));
-  quill.setContents(new Delta().insert('Hello World!\n'), 'api');
+  assertType<Delta>(quill.setContents([{ insert: 'Hello World!\n' }]));
+  assertType<Delta>(quill.setContents([{ insert: 'Hello World!\n' }], 'api'));
+  assertType<Delta>(quill.setContents(new Delta().insert('Hello World!\n')));
+  assertType<Delta>(
+    quill.setContents(new Delta().insert('Hello World!\n'), 'api'),
+  );
 }
 
 {
-  quill.format('bold', true);
-  quill.format('bold', true, 'api');
+  assertType<Delta>(quill.format('bold', true));
+  assertType<Delta>(quill.format('bold', true, 'api'));
 }
 
 {
@@ -136,8 +174,8 @@ const quill = new Quill('#editor');
 }
 
 {
-  quill.removeFormat(3, 2);
-  quill.removeFormat(3, 2, 'user');
+  assertType<Delta>(quill.removeFormat(3, 2));
+  assertType<Delta>(quill.removeFormat(3, 2, 'user'));
 }
 
 {
